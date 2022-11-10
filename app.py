@@ -77,6 +77,7 @@ def sonic():
    distance = int(sonic_time_elapsed * 17160.0)
 
 def controll():
+    prev_value = 0
     while True:
         try:
             analog_value = analog_read(0)*1.9 + 500
