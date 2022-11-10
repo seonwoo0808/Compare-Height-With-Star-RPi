@@ -125,6 +125,8 @@ async def connect():
                 await websocket.send(dumps(top_and_bottom))
                 data = await websocket.recv()
                 if data == "OK":
+                    while im_b64 == None:
+                        time.sleep(0.01)
                     await websocket.send(im_b64)
                     data = await websocket.recv()
                     if data == "OK":
