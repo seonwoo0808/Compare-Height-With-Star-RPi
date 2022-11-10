@@ -52,6 +52,7 @@ button_pushed = False
 
 # Set up the thread
 def camera_thread():
+    global im_b64
     with picamera.PiCamera() as camera:
         captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
         while True:
@@ -126,7 +127,8 @@ async def connect():
                 data = await websocket.recv()
                 if data == "OK":
                     while im_b64 == None:
-                        time.sleep(0.01)
+                        print("Waiting for image")
+                        time.sleep(0.5)
                     await websocket.send(im_b64)
                     data = await websocket.recv()
                     if data == "OK":
