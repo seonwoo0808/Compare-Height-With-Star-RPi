@@ -69,21 +69,23 @@ def camera_thread():
                 break
 
 def sonic():
-   sonic_timer_start = time.time()
-   
-   pi.write(TRIG, False)
-   time.sleep(0.01)
-   pi.write(TRIG, True)
-   time.sleep(0.00001)
-   pi.write(TRIG, False)
-   while pi.read(ECHO)==0:
-      sonic_timer_start = time.time()
-   while pi.read(ECHO)==1:
-      sonic_timer_stop = time.time()
-   sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
-   distance = int(sonic_time_elapsed * 17160.0)
+    global distance
+    sonic_timer_start = time.time()
+    
+    pi.write(TRIG, False)
+    time.sleep(0.01)
+    pi.write(TRIG, True)
+    time.sleep(0.00001)
+    pi.write(TRIG, False)
+    while pi.read(ECHO)==0:
+        sonic_timer_start = time.time()
+    while pi.read(ECHO)==1:
+        sonic_timer_stop = time.time()
+    sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
+    distance = int(sonic_time_elapsed * 17160.0)
 
 def controll():
+    global degree
     prev_value=0
     button_pushed = False
     while True:
