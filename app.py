@@ -44,6 +44,9 @@ captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
 resized_arr = np.empty((480, 640,), dtype=np.uint8)
 
 distance = 0
+prev_value = 0
+degree = 0
+button_pushed = False
 
 # Set up the thread
 def camera_thread():
@@ -144,9 +147,7 @@ def analog_read(channel):
     adc_out = ((r[1]&3) << 8) + r[2]
     return adc_out
 
-prev_value = 0
-degree = 0
-button_pushed = False
+
 
 cam_thread_obj = threading.Thread(target=camera_thread, args=(), daemon=True)
 cam_thread_obj.start()
