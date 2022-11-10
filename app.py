@@ -123,6 +123,8 @@ button_pushed = False
 
 cam_thread_obj = threading.Thread(target=camera_thread, args=(), daemon=True)
 cam_thread_obj.start()
+sonic_thread_obj = threading.Thread(target=sonic, args=(), daemon=True)
+sonic_thread_obj.start()
 asyncio.get_event_loop().run_until_complete(connect())
 
 top = {"degree": None, "distance": None}
