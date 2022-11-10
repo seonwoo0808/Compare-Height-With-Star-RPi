@@ -10,6 +10,7 @@ import asyncio
 import websockets
 import os
 import dotenv
+import base64
 from pickle import dumps, loads
 
 dotenv.load_dotenv()
@@ -40,8 +41,9 @@ d4=23
 
 # Global variables
 
-captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
-resized_arr = np.empty((480, 640,), dtype=np.uint8)
+
+
+im_b64 = None
 
 distance = 0
 prev_value = 0
@@ -51,6 +53,7 @@ button_pushed = False
 # Set up the thread
 def camera_thread():
     with picamera.PiCamera() as camera:
+        captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
         while True:
             try:
                 camera.resolution = (640, 480)
@@ -58,6 +61,9 @@ def camera_thread():
                 time.sleep(0.05)
                 camera.capture(captured_arr, 'rgb')
                 resized_arr = cv2.cvtColor(captured_arr, cv2.COLOR_RGB2GRAY)
+                _, im_arr = cv2.imencode('.jpg', resized_arr)  # im_arr: image in Numpy one-dim array format.
+                im_bytes = im_arr.tobytes()
+                im_b64 = base64.b64encode(im_bytes).decode('utf-8')
             except KeyboardInterrupt:
                 break
 
@@ -119,7 +125,7 @@ async def connect():
                 await websocket.send(dumps(top_and_bottom))
                 data = await websocket.recv()
                 if data == "OK":
-                    await websocket.send(dumps(resized_arr))
+                    await websocket.send(im_b64)
                     data = await websocket.recv()
                     if data == "OK":
                         continue
