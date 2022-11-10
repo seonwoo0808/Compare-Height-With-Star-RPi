@@ -73,6 +73,30 @@ def sonic():
    sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
    distance = int(sonic_time_elapsed * 17160.0)
 
+def controll():
+    while True:
+        try:
+            analog_value = analog_read(0)*1.9 + 500
+            if abs(analog_value - prev_value) > 50:
+                prev_value = analog_value
+                pi.set_servo_pulsewidth(SERVO_PIN, analog_value)
+                degree = int((analog_value -500)*0.09)
+            button_read = pi.read(BUTTON_PIN)
+            if button_pushed == False and button_read == 1:
+                button_pushed = True
+                if top["degree"] == None:
+                    top["degree"] = degree
+                    top["distance"] = distance
+                elif bottom["degree"] == None:
+                    bottom["degree"] = degree
+                    bottom["distance"] = distance
+            elif button_pushed == True and button_read == 0:
+                button_pushed = False
+            time.sleep(0.01)
+        except KeyboardInterrupt:
+            
+            break
+
 async def connect():
 
     # 웹 소켓에 접속을 합니다.
@@ -128,32 +152,11 @@ cam_thread_obj = threading.Thread(target=camera_thread, args=(), daemon=True)
 cam_thread_obj.start()
 sonic_thread_obj = threading.Thread(target=sonic, args=(), daemon=True)
 sonic_thread_obj.start()
-asyncio.get_event_loop().run_until_complete(connect())
+controlle_thread_obj = threading.Thread(target=controll, args=(), daemon=True)
+controlle_thread_obj.start()
 
 top = {"degree": None, "distance": None}
 bottom = {"degree": None, "distance": None}
 
-while True:
-    try:
-        analog_value = analog_read(0)*1.9 + 500
-        if abs(analog_value - prev_value) > 50:
-            prev_value = analog_value
-            pi.set_servo_pulsewidth(SERVO_PIN, analog_value)
-            degree = int((analog_value -500)*0.09)
-        button_read = pi.read(BUTTON_PIN)
-        if button_pushed == False and button_read == 1:
-            button_pushed = True
-            if top["degree"] == None:
-                top["degree"] = degree
-                top["distance"] = distance
-            elif bottom["degree"] == None:
-                bottom["degree"] = degree
-                bottom["distance"] = distance
-        elif button_pushed == True and button_read == 0:
-            button_pushed = False
-        time.sleep(0.01)
-        
-    except KeyboardInterrupt:
-        cam_thread_obj.stop()
-        break
 
+asyncio.get_event_loop().run_until_complete(connect())
