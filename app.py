@@ -119,8 +119,8 @@ async def connect():
         if data == "Web Server Hello":
             
             while True:
-                coord = np.array([degree, distance], dtype=np.float32)
-                await websocket.send(dumps(coord))
+                coord = str(degree)+","+str(distance)
+                await websocket.send(coord)
                 data = await websocket.recv()
                 top_and_bottom = np.array([], dtype=np.float32)
                 await websocket.send(dumps(top_and_bottom))
