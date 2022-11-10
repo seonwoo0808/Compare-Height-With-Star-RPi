@@ -86,6 +86,9 @@ async def connect():
                 coord = np.array([degree, distance], dtype=np.float32)
                 await websocket.send(dumps(coord))
                 data = await websocket.recv()
+                top_and_bottom = np.array([], dtype=np.float32)
+                await websocket.send(dumps(top_and_bottom))
+                data = await websocket.recv()
                 if data == "OK":
                     await websocket.send(dumps(resized_arr))
                     data = await websocket.recv()
