@@ -76,7 +76,7 @@ def sonic():
 async def connect():
 
     # 웹 소켓에 접속을 합니다.
-    async with websockets.connect("ws://"+os.environ["HOST"]+":8000/rpi") as websocket:
+    async with websockets.connect("ws://"+os.environ["HOST"]+":8000/rpi/1") as websocket:
 
         await websocket.send("Raspberry Pi Hello")
         data = await websocket.recv()
