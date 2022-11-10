@@ -62,9 +62,7 @@ def camera_thread():
                 time.sleep(0.05)
                 camera.capture(captured_arr, 'rgb')
                 # resize to 320x240
-                resized_arr = cv2.resize(captured_arr, (320, 240))
-                resized_arr = cv2.cvtColor(resized_arr, cv2.COLOR_RGB2GRAY)
-                _, im_arr = cv2.imencode('.jpg', resized_arr)  # im_arr: image in Numpy one-dim array format.
+                _, im_arr = cv2.imencode('.jpg', captured_arr)  # im_arr: image in Numpy one-dim array format.
                 im_bytes = im_arr.tobytes()
                 im_b64 = base64.b64encode(im_bytes).decode('utf-8')
             except KeyboardInterrupt:
