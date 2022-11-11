@@ -114,6 +114,7 @@ def controll():
             button_read = pi.read(BUTTON_PIN)
             if button_pushed == False and button_read == 1:
                 button_pushed = True
+                time.sleep(3)
                 if flag == False:
                     flag = True
                     top["degree"] = degree
