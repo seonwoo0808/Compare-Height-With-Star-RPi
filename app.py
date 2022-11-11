@@ -126,9 +126,10 @@ def controll():
                     radian = (90 - degree) * 3.14 / 180
                     bottom_height = distance * np.cos(radian) 
                 height = top_height + bottom_height
+                print(height)
             elif button_pushed == True and button_read == 0:
                 button_pushed = False
-            print(height)
+            
             time.sleep(0.01)
         except KeyboardInterrupt:
             
