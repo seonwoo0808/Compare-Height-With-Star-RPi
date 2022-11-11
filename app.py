@@ -76,9 +76,6 @@ def camera_thread(): # camera thread
 def sonic():
     global distance
     sonic_timer_start = time.time()
-    
-    pi.write(TRIG, False)
-    time.sleep(0.01)
     pi.write(TRIG, True)
     time.sleep(0.00001)
     pi.write(TRIG, False)
@@ -88,7 +85,20 @@ def sonic():
         sonic_timer_stop = time.time()
     sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
     distance = int(sonic_time_elapsed * 17160.0)
+# val = GPIO.input(BUTTON_PIN)
+#         if val:
+#             GPIO.output(TRIG_PIN, True)
+#             time.sleep(0.00001)
+#             GPIO.output(TRIG_PIN, False)
 
+#             while GPIO.input(ECHO_PIN) == 0:
+#                 start = time.time()
+
+#             while GPIO.input(ECHO_PIN) == 1:
+#                 stop = time.time()
+
+
+#             duration_time = stop - start
 def controll():
     global degree
     global height
@@ -184,6 +194,8 @@ pi.set_pull_up_down(BUTTON_PIN, pigpio.PUD_DOWN)
 # Ultrasonic Initialization
 pi.set_mode(TRIG, pigpio.OUTPUT)
 pi.set_mode(ECHO, pigpio.INPUT)
+pi.write(TRIG, False)
+time.sleep(0.01)
 
 # 4 Digit 7 Segment Initialization
 for segment in SEGMENT_PINS:
