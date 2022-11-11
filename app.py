@@ -140,17 +140,18 @@ def controll():
 def display():  #자리수, 숫자
     while True:
         number_str = "{:04d}".format(int(height))
-        print(number_str)
-        
         for digit, number in enumerate(number_str):
-            for i in range(len(DIGIT_PINS)):
-                if i == digit:
-                    pi.write(DIGIT_PINS[i], False)
-                else:
-                    pi.write(DIGIT_PINS[i], True)
-            for i in range(0, 8):
-                pi.write(SEGMENT_PINS[i], data[int(number)][i])
-            time.sleep(0.0001)
+            set_display(digit, number)
+def set_display(digit, number):
+    for i in range(len(DIGIT_PINS)):
+        if i == digit:
+            pi.write(DIGIT_PINS[i], False)
+        else:
+            pi.write(DIGIT_PINS[i], True)
+    # 숫자 출력
+    for i in range(len(SEGMENT_PINS)):
+        pi.write(SEGMENT_PINS[i], data[int(number)][i])
+    time.sleep(0.001)
 
 async def connect():
 
