@@ -90,7 +90,6 @@ def sonic():
             stop = time.time()
         sonic_time_elapsed = stop - start
         distance = sonic_time_elapsed * 17160
-        print('Distance: %.1fcm' %distance)
         time.sleep(0.01)
             
 
@@ -128,6 +127,7 @@ def controll():
                 height = top_height + bottom_height
             elif button_pushed == True and button_read == 0:
                 button_pushed = False
+            print(height)
             time.sleep(0.01)
         except KeyboardInterrupt:
             
@@ -146,7 +146,7 @@ def display():  #자리수, 숫자
             # 숫자 출력
             for i in range(len(SEGMENT_PINS)):
                     pi.write(SEGMENT_PINS[i], data[int(number)][i])
-            time.sleep(0.001)
+            time.sleep(0.0001)
 
 async def connect():
 
