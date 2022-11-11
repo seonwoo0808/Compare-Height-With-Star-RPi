@@ -102,6 +102,7 @@ def controll():
     flag = False
     bottom_height = 0
     top_height = 0
+    height=0
     while True:
         try:
             analog_value = analog_read(0)*1.9 + 500
