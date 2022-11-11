@@ -76,8 +76,6 @@ def camera_thread(): # camera thread
 def sonic():
     global distance
     while True:
-        val = pi.read(ECHO)
-        if val:
             pi.write(TRIG, True)
             time.sleep(0.00001)
             pi.write(TRIG, False)
@@ -88,6 +86,8 @@ def sonic():
             sonic_time_elapsed = stop - start
             distance = sonic_time_elapsed * 17160
             print('Distance: %.1fcm' %distance)
+            time.sleep(0.01)
+            
 
             
 def controll():
