@@ -26,22 +26,22 @@ BUTTON_PIN = 16
 
 TRIG = 17
 ECHO = 4
-A=5
-B=6
-C=12
-D=16
-E=26
-F=20
-G=21
 
-d1=25
-d2=22
-d3=24
-d4=23
+SEGMENT_PINS = [5, 6, 12, 16, 26, 20, 21]
+DIGIT_PINS = [25, 22, 24, 23]
+
+data = [[1, 1, 1, 1, 1, 1, 0],  #0
+        [0, 1, 1, 0, 0, 0, 0],  #1
+        [1, 1, 0, 1, 1, 0, 1],  #2
+        [1, 1, 1, 1, 0, 0, 1],  #3
+        [0, 1, 1, 0, 0, 1, 1],  #4
+        [1, 0, 1, 1, 0, 1, 1],  #5
+        [1, 0, 1, 1, 1, 1, 1],  #6
+        [1, 1, 1, 0, 0, 0, 0],  #7
+        [1, 1, 1, 1, 1, 1, 1],  #8
+        [1, 1, 1, 0, 0, 1, 1]]  #9
 
 # Global variables
-
-
 
 im_b64 = None
 
@@ -50,8 +50,13 @@ prev_value = 0
 degree = 0
 button_pushed = False
 
+height = 0
+
+top = {"degree": 0, "distance": 0} # top degree, distance
+bottom = {"degree": 0, "distance": 0} # bottom degree, distance
+
 # Set up the thread
-def camera_thread():
+def camera_thread(): # camera thread
     global im_b64
     with picamera.PiCamera() as camera:
         captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
@@ -86,8 +91,12 @@ def sonic():
 
 def controll():
     global degree
+    global height
     prev_value=0
     button_pushed = False
+    flag = False
+    bottom_height = 0
+    top_height = 0
     while True:
         try:
             analog_value = analog_read(0)*1.9 + 500
@@ -98,18 +107,40 @@ def controll():
             button_read = pi.read(BUTTON_PIN)
             if button_pushed == False and button_read == 1:
                 button_pushed = True
-                if top["degree"] == None:
+                if flag == False:
+                    flag = True
                     top["degree"] = degree
                     top["distance"] = distance
-                elif bottom["degree"] == None:
+                    radian = (90 - degree) * 3.14 / 180
+                    top_height = distance * np.cos(radian)
+                else:
+                    flag = False
                     bottom["degree"] = degree
                     bottom["distance"] = distance
+                    radian = (90 - degree) * 3.14 / 180
+                    bottom_height = distance * np.cos(radian) 
+                height = top_height + bottom_height
             elif button_pushed == True and button_read == 0:
                 button_pushed = False
             time.sleep(0.01)
         except KeyboardInterrupt:
             
             break
+
+def display():  #자리수, 숫자
+    while True:
+        number_str = "{:04d}".format(height)
+        
+        for digit, number in enumerate(number_str):
+            for i in range(len(DIGIT_PINS)):
+                    if i+1 == digit:
+                        pi.write(DIGIT_PINS[i], False)
+                    else:
+                        pi.write(DIGIT_PINS[i], True)
+            # 숫자 출력
+            for i in range(len(SEGMENT_PINS)):
+                    pi.write(SEGMENT_PINS[i], data[int(number)][i])
+            time.sleep(0.001)
 
 async def connect():
 
@@ -124,8 +155,7 @@ async def connect():
                 coord = str(degree)+","+str(distance)
                 await websocket.send(coord)
                 data = await websocket.recv()
-                top_and_bottom = np.array([], dtype=np.float32)
-                await websocket.send(dumps(top_and_bottom))
+                await websocket.send("{},{},{},{},{}".format(top["degree"], top["distance"], bottom["degree"], bottom["distance"], height))
                 data = await websocket.recv()
                 if data == "OK":
                     while im_b64 == None:
@@ -155,13 +185,22 @@ pi.set_pull_up_down(BUTTON_PIN, pigpio.PUD_DOWN)
 pi.set_mode(TRIG, pigpio.OUTPUT)
 pi.set_mode(ECHO, pigpio.INPUT)
 
+# 4 Digit 7 Segment Initialization
+for segment in SEGMENT_PINS:
+    pi.set_mode(segment, pigpio.OUTPUT)
+    pi.write(segment, False)
 
-def analog_read(channel):
+for digit in DIGIT_PINS:
+    pi.set_mode(digit, pigpio.OUTPUT)
+    pi.write(digit, True)
+
+def analog_read(channel): # read ADC value
     r = spi.xfer2([1, (8 + channel) << 4, 0])
     adc_out = ((r[1]&3) << 8) + r[2]
     return adc_out
 
 
+# create thread object and run
 
 cam_thread_obj = threading.Thread(target=camera_thread, args=(), daemon=True)
 cam_thread_obj.start()
@@ -169,9 +208,9 @@ sonic_thread_obj = threading.Thread(target=sonic, args=(), daemon=True)
 sonic_thread_obj.start()
 controlle_thread_obj = threading.Thread(target=controll, args=(), daemon=True)
 controlle_thread_obj.start()
+fnd_thread_obj = threading.Thread(target=display, args=(), daemon=True)
+fnd_thread_obj.start()
 
-top = {"degree": None, "distance": None}
-bottom = {"degree": None, "distance": None}
 
 
 asyncio.get_event_loop().run_until_complete(connect())
