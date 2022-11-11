@@ -65,7 +65,7 @@ def camera_thread(): # camera thread
         time.sleep(0.05)
         while True:
             try:
-                camera.capture(captured_arr, 'rgb')
+                camera.capture(captured_arr, 'bgr')
                 # resize to 320x240
                 _, im_arr = cv2.imencode('.jpg', captured_arr)  # im_arr: image in Numpy one-dim array format.
                 im_bytes = im_arr.tobytes()
