@@ -86,6 +86,7 @@ def sonic():
             i+=1
             if i>10000:
                 break
+        stop = time.time()
         while pi.read(ECHO)==1:
             stop = time.time()
         sonic_time_elapsed = stop - start
