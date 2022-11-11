@@ -111,7 +111,6 @@ def controll():
                 pi.set_servo_pulsewidth(SERVO_PIN, analog_value)
                 degree = int((analog_value -500)*0.09)
             button_read = pi.read(BUTTON_PIN)
-            print(button_read)
             if button_pushed == False and button_read == 1:
                 button_pushed = True
                 if flag == False:
