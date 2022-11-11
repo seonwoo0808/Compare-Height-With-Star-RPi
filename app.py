@@ -86,21 +86,10 @@ def sonic():
             while pi.read(ECHO)==1:
                 stop = time.time()
             sonic_time_elapsed = stop - start
-            distance = int(sonic_time_elapsed * 17160.0)
-# val = GPIO.input(BUTTON_PIN)
-#         if val:
-#             GPIO.output(TRIG_PIN, True)
-#             time.sleep(0.00001)
-#             GPIO.output(TRIG_PIN, False)
+            distance = sonic_time_elapsed * 17160
+            print('Distance: %.1fcm' %distance)
 
-#             while GPIO.input(ECHO_PIN) == 0:
-#                 start = time.time()
-
-#             while GPIO.input(ECHO_PIN) == 1:
-#                 stop = time.time()
-
-
-#             duration_time = stop - start
+            
 def controll():
     global degree
     global height
