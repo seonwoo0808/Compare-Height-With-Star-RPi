@@ -148,8 +148,8 @@ def display():  #자리수, 숫자
                     pi.write(DIGIT_PINS[i], False)
                 else:
                     pi.write(DIGIT_PINS[i], True)
-            for i in range(0, 10):
-                pi.write(SEGMENT_PINS[digit], data[int(number)][i])
+            for i in range(0, 8):
+                pi.write(SEGMENT_PINS[i], data[int(number)][i])
             time.sleep(0.0001)
 
 async def connect():
