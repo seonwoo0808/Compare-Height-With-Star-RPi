@@ -144,13 +144,12 @@ def display():  #자리수, 숫자
         
         for digit, number in enumerate(number_str):
             for i in range(len(DIGIT_PINS)):
-                    if i == digit:
-                        pi.write(DIGIT_PINS[i], False)
-                    else:
-                        pi.write(DIGIT_PINS[i], True)
-            # 숫자 출력
-            for i in range(len(SEGMENT_PINS)):
-                    pi.write(SEGMENT_PINS[i], data[int(number)][i])
+                if i == digit:
+                    pi.write(DIGIT_PINS[i], False)
+                else:
+                    pi.write(DIGIT_PINS[i], True)
+            for i in range(0, 10):
+                pi.write(SEGMENT_PINS[digit], data[int(number)][i])
             time.sleep(0.0001)
 
 async def connect():
