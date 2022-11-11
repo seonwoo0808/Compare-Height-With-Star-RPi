@@ -76,16 +76,16 @@ def camera_thread(): # camera thread
 def sonic():
     global distance
     while True:
-        if pi.read(ECHO) ==1:
-            sonic_timer_start = time.time()
+        val = pi.read(ECHO)
+        if val:
             pi.write(TRIG, True)
             time.sleep(0.00001)
             pi.write(TRIG, False)
             while pi.read(ECHO)==0:
-                sonic_timer_start = time.time()
+                start = time.time()
             while pi.read(ECHO)==1:
-                sonic_timer_stop = time.time()
-            sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
+                stop = time.time()
+            sonic_time_elapsed = stop - start
             distance = int(sonic_time_elapsed * 17160.0)
 # val = GPIO.input(BUTTON_PIN)
 #         if val:
