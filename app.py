@@ -60,11 +60,11 @@ def camera_thread(): # camera thread
     global im_b64
     with picamera.PiCamera() as camera:
         captured_arr = np.empty((480, 640, 3), dtype=np.uint8)
+        camera.resolution = (640, 480)
+        camera.framerate = 24
+        time.sleep(0.05)
         while True:
             try:
-                camera.resolution = (640, 480)
-                camera.framerate = 24
-                time.sleep(0.05)
                 camera.capture(captured_arr, 'rgb')
                 # resize to 320x240
                 _, im_arr = cv2.imencode('.jpg', captured_arr)  # im_arr: image in Numpy one-dim array format.
