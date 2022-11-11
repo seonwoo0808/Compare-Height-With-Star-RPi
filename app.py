@@ -129,7 +129,7 @@ def controll():
 
 def display():  #자리수, 숫자
     while True:
-        number_str = "{:04d}".format(height)
+        number_str = "{:04d}".format(int(height))
         
         for digit, number in enumerate(number_str):
             for i in range(len(DIGIT_PINS)):
