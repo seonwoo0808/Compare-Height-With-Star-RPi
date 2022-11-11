@@ -140,10 +140,11 @@ def controll():
 def display():  #자리수, 숫자
     while True:
         number_str = "{:04d}".format(int(height))
+        print(number_str)
         
         for digit, number in enumerate(number_str):
             for i in range(len(DIGIT_PINS)):
-                    if i+1 == digit:
+                    if i == digit:
                         pi.write(DIGIT_PINS[i], False)
                     else:
                         pi.write(DIGIT_PINS[i], True)
