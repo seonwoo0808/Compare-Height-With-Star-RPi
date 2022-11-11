@@ -77,14 +77,14 @@ def sonic():
     global distance
     sonic_timer_start = time.time()
     pi.write(TRIG, True)
-    time.sleep(0.00001)
+    time.sleep(0.0001)
     pi.write(TRIG, False)
     while pi.read(ECHO)==0:
         sonic_timer_start = time.time()
     while pi.read(ECHO)==1:
         sonic_timer_stop = time.time()
     sonic_time_elapsed = sonic_timer_start - sonic_timer_stop
-    distance = int(sonic_time_elapsed * 17160.0)
+    distance = int(sonic_time_elapsed * 1716.0)
 # val = GPIO.input(BUTTON_PIN)
 #         if val:
 #             GPIO.output(TRIG_PIN, True)
