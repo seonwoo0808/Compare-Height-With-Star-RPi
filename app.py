@@ -79,6 +79,7 @@ def sonic():
         pi.write(TRIG, True)
         time.sleep(0.00001)
         pi.write(TRIG, False)
+        start = time.time()
         while pi.read(ECHO)==0:
             print(pi.read(ECHO))
             start = time.time()
